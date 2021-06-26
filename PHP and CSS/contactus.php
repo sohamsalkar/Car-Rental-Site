@@ -107,11 +107,11 @@ $Address=  $_POST['msg'];
                     <h2><i class="fa fa-handshake-o" aria-hidden="true"></i>  Contact Info</h2>
                     <div class="container">
                     <ul>
-                        <li><h3><i class="fa fa-map-marker" aria-hidden="true"></i>  Airoli,Navi Mumbai-708.</h3>
+                        <li><h3><i class="fa fa-map-marker" aria-hidden="true"></i> Dombivli</h3>
                         </li>
-                        <li><h3><i class="fa fa-envelope-o" aria-hidden="true"></i>  ritiesh3542@gmail.com
+                        <li><h3><i class="fa fa-envelope-o" aria-hidden="true"></i> salkarsoham2@gmail.com
                         </li>
-                        <li><h3><i class="fa fa-phone" aria-hidden="true"></i>   23657577
+                        <li><h3><i class="fa fa-phone" aria-hidden="true"></i> 123456789
                         </li>
                     </ul>
                 </div>
