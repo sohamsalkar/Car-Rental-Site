@@ -44,8 +44,26 @@ table thead th, table thead td {
 <body style="background-color:#cdf9ff">
 <?php
  $r=mysqli_query($conn,"SELECT * FROM `tblusers` WHERE id in (SELECT `id` FROM `users` where `username`='$id')");
+
  $s = mysqli_fetch_array($r);
+
 ?>
+<?php
+if(isset($_POST['updateprofile']))
+{
+$FullName=  $_POST['nfullname'];
+$ContactNo=  $_POST['nmobilenumber'];
+$dob=  $_POST['ndob'];
+$Address=  $_POST['naddress'];
+$City=  $_POST['ncity'];
+$Country=  $_POST['ncountry'];
+
+ if(mysqli_query($conn, "UPDATE tblusers SET FullName= '$FullName' , ContactNo= '$ContactNo' , dob = '$dob' , Address = '$Address', City = '$City', Country = '$Country' WHERE EmailId= '$s[EmailId]' " )){
+  echo '<script>alert ( "UPDATED" );</script>';  
+  header("Refresh:0");
+ }
+ 
+}?>
   <div class="navigation">
   <ul >
       <li> <img src="./images/logo.jpg" height="65px" width="130"></li>
@@ -73,9 +91,73 @@ table thead th, table thead td {
                 <button style="text-align: left;width:100%" class="tablinks" onclick="location.href='logout.php'">Sign out</button>
             </div>
               
-              <div id="ps" class="tabcontentp">
+                    <script>
+                      function updatefun()
+                      {
+
+
+  if(document.signup.nfullname.value == "")
+	{
+		alert( "Enter Your Name!" );
+		document.signup.nfullname.focus() ;
+		return false;
+	}
+	
+   
+	if(document.signup.naddress.value == "" )
+	{
+     alert( "Enter Your Address!" );
+     document.signup.naddress.focus() ;
+     return false;
+	}
+	
+	
+	var email = document.signup.emailid.value;
+	atpos = email.indexOf("@");
+	dotpos = email.lastIndexOf(".");
+	
+	if (email == "" || atpos < 1 || ( dotpos - atpos < 2 )) 
+	{
+		alert("Enter your correct email ID")
+		document.signup.emailid.focus() ;
+		return false;
+	}
+	if( document.signup.nmobilenumber.value == "" || isNaN( document.signup.nmobilenumber.value) || document.signup.nmobilenumber.value.length != 10 )
+	{
+		alert( "Enter your Mobile No. in the proper 10 digit format" );
+		document.signup.nmobilenumber.focus() ;
+		return false;
+	}
+
+	/*if(document.signup.psw.value=="" || document.signup.psw.value==null)
+	{
+        alert("password length is less than 6");
+        return false; 
+    }
+    
+    if (document.signup.psw.value.length<6){
+        alert("password length is less than 6");
+        return false;   
+    }*/
+
+	if( document.signup.ndob.value == "" )
+	{
+		alert( "Enter your DOB!" );
+		document.signup.ndob.focus() ;
+		return false;
+	}
+  
+  
+  
+
+ }
+
+ </script>
+
+
+              <div id="ps" class="tabcontentp" role="document" >
                 <h3><u>GENERAL SETTINGS</u></h3>
-                    <form  method="post" action="#" onsubmit="#">
+                    <form  method="post" action="profile.php" name="signup" onsubmit="return updatefun();">
                         <div class="form-group">
                            <label class="control-label">Reg Date - <?php echo "$s[RegDate]";?></label>
                          </div>
@@ -85,7 +167,7 @@ table thead th, table thead td {
                          <br>
                          <div class="form-group">
                            <label class="control-label">Full Name</label><br><br>
-                           <input style="width:500px" class="form-control white_bg" name="fullname" value="<?php echo "$s[FullName]";?>" id="fullname" type="text"  required>
+                           <input style="width:500px" class="form-control white_bg" name="nfullname" value="<?php echo "$s[FullName]";?>" id="fullname" type="text"  required>
                          </div>
                          <div class="form-group">
                            <label class="control-label">Email Address</label><br><br>
@@ -93,42 +175,68 @@ table thead th, table thead td {
                          </div>
                          <div class="form-group">
                            <label class="control-label">Phone Number</label><br><br>
-                           <input style="width:500px" class="form-control white_bg" name="mobilenumber" value="<?php echo "$s[ContactNo]";?>" id="phone-number" type="text" required>
+                           <input style="width:500px" class="form-control white_bg" name="nmobilenumber" value="<?php echo "$s[ContactNo]";?>" id="phone-number" type="text" required>
                          </div>
                          <div class="form-group">
                            <label class="control-label">Date of Birth&nbsp;(dd/mm/yyyy)</label><br><br>
-                           <input style="width:500px" class="form-control white_bg" value="<?php echo "$s[dob]";?>" name="dob" placeholder="dd/mm/yyyy" id="birth-date" type="text" >
+                           <input style="width:500px" class="form-control white_bg" value="<?php echo "$s[dob]";?>" name="ndob" placeholder="dd/mm/yyyy" id="birth-date" type="text" >
                          </div>
                          <div class="form-group">
                            <label class="control-label">Your Address</label><br><br>
-                           <textarea style="width:500px" class="form-control white_bg" name="address" rows="4" ><?php echo "$s[Address]";?></textarea>
+                           <textarea style="width:500px" class="form-control white_bg" name="naddress" rows="4" ><?php echo "$s[Address]";?></textarea>
                          </div>
                          <div class="form-group">
                            <label class="control-label">Country</label><br><br>
-                           <input style="width:500px" class="form-control white_bg"  id="country" name="country" value="<?php echo "$s[Country]";?>" type="text">
+                           <input style="width:500px" class="form-control white_bg"  id="country" name="ncountry" value="<?php echo "$s[Country]";?>" type="text">
                          </div>
                          <div class="form-group">
                            <label class="control-label">City</label><br><br>
-                           <input style="width:500px" class="form-control white_bg" id="city" name="city" value="<?php echo "$s[City]";?>" type="text">
+                           <input style="width:500px" class="form-control white_bg" id="city" name="ncity" value="<?php echo "$s[City]";?>" type="text">
                          </div>
-                         <div class="form-group">
-                            <label class="control-label" for="img">Photo</label><br><br>
-                            <input style="width:500px" class="form-control white_bg"  type="file" id="img" name="img" accept="image/*">
-                         </div>
+                         
                         
                          <div class="form-group">
                            <button style="background-color: #eb5454;" type="submit" name="updateprofile" class="btn">Save Changes <span class="angle_arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></span></button>
                          </div>
                        </form>
+
+                       
               </div>
-              
+
+
+<script type="text/javascript">             
+function pwdvalid()
+{
+if(document.chngpwd.newpassword.value!= document.chngpwd.confirmpassword.value)
+{
+alert("New Password and Confirm Password Field do not match  !!");
+document.chngpwd.confirmpassword.focus();
+return false;
+}
+return true;
+}
+</script>
+<?php
+if (isset($_POST['updatepass'])) {
+  $un=$_SESSION["username"];
+  $np=$_POST["newpassword"];
+  $result = mysqli_query($conn, "SELECT * FROM `users` WHERE username='$un'");
+  $row = mysqli_fetch_array($result);
+  if ($_POST["currentPassword"] == $row["password"]) {
+      mysqli_query($conn, "UPDATE users set password='$np' WHERE username='$un'");
+      $message = "Password Changed";
+  } else
+      $message = "Current Password is not correct";
+}
+?>            
+
               <div id="up" class="tabcontentp">
                 <h3><u>UPDATE PASSWORD</u></h3>
                 <br>
-                <form name="chngpwd" method="post" onSubmit="#">
+                <form name="chngpwd" method="post" >
                     <div class="form-group">
                       <label class="control-label">Current Password</label><br><br>
-                      <input style="width:500px" class="form-control white_bg" id="password" name="password"  type="password" required>
+                      <input style="width:500px" class="form-control white_bg" id="currentPassword" name="currentPassword"  type="password" required>
                     </div>
                     <div cl
                     <div class="form-group">
@@ -141,45 +249,64 @@ table thead th, table thead td {
                     </div>
                     <br><br>
                     <div class="form-group">
-                       <input style="background-color: #eb5454;" type="submit" value="Update" name="updatepass" id="submit" class="btn btn-block">
+                       <button style="background-color: #eb5454;" name="updatepass" id="updatepass" class="btn btn-block">UPDATE</button>
                     </div>
                   </form> 
               </div>
               
               <div id="mb" class="tabcontentp">
+              <?php
+              $em=$s['EmailId'];
+                $que=mysqli_query($conn,"SELECT * FROM `tblbooking` WHERE userEmail='$em'");
+                $row = mysqli_num_rows($que);
+                if($row){
+                while($qr= mysqli_fetch_array($que)) {
+                  $qv=mysqli_query($conn,"SELECT * FROM `tblvehicles` where id=$qr[VehicleId]");
+                  $qvr=mysqli_fetch_array($qv);?>
+                  <h3><u>MY BOOKINGS</u></h3><br><br>
+                  <div  style="height:500px;color:#05386B;padding:10px 10px;"class="card-test">
+                      <h3 style="color:#eb5454">BOOKING NO #<?php echo $qr['BookingNumber'];?>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <?php if($qr['Status']==1){?>
+                      <a style="width:110px;color: #05386B;border: 1px solid #248107;" class="btn outline btn-xs active-btn">CONFIRMED</a></h3>
+                      <?php } elseif($qr['Status']==0){?>
+                      <a style="width:130px;color: #05386B;border: 1px solid red;" class="btn outline btn-xs active-btn">NOT CONFIRMED</a></h3>
+                      <?php }?>
+                      <hr style="width: 100%;">
+                      <img src="images/<?php echo $qvr['Vimage1'];?>" style="height:150px;width:200px;border-radius: 8px;" alt="Avatar">
+                      <br>
+                      <B><h3><?php echo $qvr['VehiclesTitle'];?></h3></B>
+                      <p>From <?php echo $qr['FromDate'];?> To <?php echo $qr['ToDate'];?></p>
+                      <p>Message: <?php echo $qr['message'];?></p>
+                      <br>
+                      <hr style="width: 100%;">
+                      <h3>INVOICE</h3>
+                      <table>
+                      <tr>
+                        <th>Car Name</th>
+                        <th>From Date</th>
+                        <th>To Date</th>
+                        <th>Total Days</th>
+                        <th>Rent / Day</th>
+                      </tr>
+                      <tr>
+                        <td><?php echo $qvr['VehiclesTitle'];?></td>
+                        <td><?php echo $qr['FromDate'];?></td>
+                          <td><?php echo $qr['ToDate'];?></td>
+                          <td><?php $diff=date_diff(date_create($qr['FromDate']),date_create($qr['ToDate']));echo $diff->format("%a");?></td>
+                            <td><?php echo $qvr['PricePerDay'];?></td>
+                      </tr>
+                      <tr>
+                        <th colspan="4" style="text-align:center;"> Grand Total</th>
+                        <th><?php $diffDays= intval($diff->format("%d"));echo $diffDays*$qvr['PricePerDay'];?></th>
+                      </tr>
+                    </table>
+                  </div>
+               <?php } 
+              } 
+              else{?>
                 <h3><u>MY BOOKINGS</u></h3><br><br>
-                <div  style="height:500px;color:#05386B;padding:10px 10px;"class="card-test">
-                    <h3 style="color:#eb5454">BOOKING NO #123456789  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a style="width:110px;color: #05386B;border: 1px solid #248107;" class="btn outline btn-xs active-btn">CONFIRMED</a></h3>
-                    <hr style="width: 100%;">
-                    <img src="images/BMW-5-Series-Exterior-102006.jpg" style="height:150px;width:200px;border-radius: 8px;" alt="Avatar">
-                    <br>
-                    <B><h3>BMW , BMW 5 series</h3></B>
-                    <p>From 2020-07-07 To 2020-07-09</p>
-                    <p>Message: What is the cost</p>
-                    <br>
-                    <hr style="width: 100%;">
-                    <h3>INVOICE</h3>
-                    <table>
-  <tr>
-    <th>Car Name</th>
-    <th>From Date</th>
-    <th>To Date</th>
-    <th>Total Days</th>
-    <th>Rent / Day</th>
-  </tr>
-  <tr>
-    <td>BMW , BMW 5 series</td>
-     <td>2020-07-07</td>
-      <td>2020-07-09</td>
-       <td>2</td>
-        <td>500</td>
-  </tr>
-  <tr>
-    <th colspan="4" style="text-align:center;"> Grand Total</th>
-    <th>1000</th>
-  </tr>
-</table>
-                </div>
+               <h4>NO BOOKINGS YET</h4>
+               <?php }?>
               </div>
 
               <div id="pt" class="tabcontentp">
