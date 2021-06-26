@@ -3,6 +3,7 @@
 <?php
 // Initialize the session
 session_start();
+include("database.php");
 ?>
 <head>
   <title>CAR RENTAL</title>
@@ -30,7 +31,7 @@ table td {
             echo" <li style="."float:right"."><a href="."login.php"." class="."btn btn-one".">Login / Register</a></li> ";
         }
         else{
-            include("database.php");
+            
 $id=$_SESSION["username"];
  $r=mysqli_query($conn,"SELECT * FROM `tblusers` WHERE id in (SELECT `id` FROM `users` where `username`='$id')");
  $s = mysqli_fetch_array($r);
@@ -38,6 +39,20 @@ $id=$_SESSION["username"];
         }
       
       ?>
+      <?php
+if(isset($_POST['consubmit']))
+{
+$FullName=  $_POST['firstname'];
+$ContactNo=  $_POST['phone-no'];
+$dob=  $_POST['mail'];
+$Address=  $_POST['msg'];
+
+ if(mysqli_query($conn, "INSERT INTO `tblcontactusquery`( `name`, `EmailId`, `ContactNumber`, `Message`, `status`) VALUES ('$FullName','$dob','$ContactNo','$Address','0') " )){
+  echo '<script>alert ( "Query submitted!!" );</script>';  
+  header("Refresh:0");
+ }
+ 
+}?>
     </ul>
   </div>
     <div class="container-bkimg">
@@ -53,7 +68,7 @@ $id=$_SESSION["username"];
                 <div>
                     <h2><i class="fa fa-paper-plane" aria-hidden="true"></i>  Get in touch using the form below</h2>
                     <div class="container">
-                    <form method="#" action="/action_page.php">
+                    <form method="post" action="contactus.php">
                         <div class="form-group">
                         <label class="control-label" for="fname">Full Name</label>
                         <br>
@@ -79,7 +94,7 @@ $id=$_SESSION["username"];
                         <br>
                         </div>
                         <div class="form-group">
-                        <input style="background-color: #eb5454;width:530px;border-radius:10px;height:30px" type="submit" value="Submit">
+                        <input style="background-color: #eb5454;width:530px;border-radius:10px;height:30px" type="submit" name="consubmit" value="Submit">
                         </div>
                     </form>
                     </div>
@@ -92,11 +107,11 @@ $id=$_SESSION["username"];
                     <h2><i class="fa fa-handshake-o" aria-hidden="true"></i>  Contact Info</h2>
                     <div class="container">
                     <ul>
-                        <li><h3><i class="fa fa-map-marker" aria-hidden="true"></i> Mumbai-708.</h3>
+                        <li><h3><i class="fa fa-map-marker" aria-hidden="true"></i>  Airoli,Navi Mumbai-708.</h3>
                         </li>
-                        <li><h3><i class="fa fa-envelope-o" aria-hidden="true"></i>  salkarsoham2@gmail.com
+                        <li><h3><i class="fa fa-envelope-o" aria-hidden="true"></i>  ritiesh3542@gmail.com
                         </li>
-                        <li><h3><i class="fa fa-phone" aria-hidden="true"></i> 1234-123-123
+                        <li><h3><i class="fa fa-phone" aria-hidden="true"></i>   23657577
                         </li>
                     </ul>
                 </div>

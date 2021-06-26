@@ -3,6 +3,8 @@
 <?php
 // Initialize the session
 session_start();
+include("database.php");
+
 ?>
 <head>
   <title>CAR RENTAL</title>
@@ -24,11 +26,11 @@ session_start();
             echo" <li style="."float:right"."><a href="."login.php"." class="."btn btn-one".">Login / Register</a></li> ";
         }
         else{
-            include("database.php");
+         
 $id=$_SESSION["username"];
- $r=mysqli_query($conn,"SELECT * FROM `tblusers` WHERE id in (SELECT `id` FROM `users` where `username`='$id')");
- $s = mysqli_fetch_array($r);
-            echo" <li style="."float:right"."><a href="."login.php"." class="."btn btn-one"."><i class="."fa fa-user-o"." aria-hidden="."true"."></i>  $s[FullName]</a></li> ";
+$r=mysqli_query($conn,"SELECT * FROM `tblusers` WHERE id in (SELECT `id` FROM `users` where `username`='$id')");
+$s = mysqli_fetch_array($r);
+echo" <li style="."float:right"."><a href="."login.php"." class="."btn btn-one"."><i class="."fa fa-user-o"." aria-hidden="."true"."></i>  $s[FullName]</a></li> ";
         }
       
       ?>
@@ -43,13 +45,28 @@ $id=$_SESSION["username"];
     <table style="padding: 10px 30px">
         <tr>
             <td><div style="width:300px;height:300px;background-color: rgba(255, 255, 255, 0.8);" class="grid-container-test" >
-                <h2><i class="fa fa-filter" aria-hidden="true"></i> Find Your  Car </h2>
+                <h2><i class="fa fa-filter" aria-hidden="true"></i> Find Your Car </h2>
                 <div class="sidebar_filter">
-                    <form action="#" method="post">
+
+                    <form action="car-search.php" method="post">
                       <div class="form-group">
-                        <select style="width: 100%;"class="form-control" name="brand">
+                        <select style="width: 100%;" class="form-control" name="brand">
                           <option>Select Brand</option>
+
+                          <?php 
+                          $brd=mysqli_query($conn,"SELECT * from  tblbrands "); 
+                          $reco = array();
+                          while($row = mysqli_fetch_assoc($brd) ){   
+                                $reco[] = $row;
+                          }
+                          ?>
+                      <?php foreach(  $reco as $rec ){?>
+                            <option value="<?php echo $rec['id'];?>">  <?php echo $rec['BrandName'];?>  </option>
+                        <?php } ?>
+
+
                         </select>
+
                     </div>
                     <div class="form-group">
                       <select style="width: 100%;" class="form-control" name="fueltype">
@@ -66,67 +83,68 @@ $id=$_SESSION["username"];
                   </form>
             </div>
         <br></td>
+       
+
+
+
+
             <td rowspan="2" ><div style="width:700px;height:750px;background-color: rgba(255, 255, 255, 0.8);padding:10px 15px" class="grid-container-test" >
+            <?php 
+       $all=mysqli_query($conn,"SELECT tblvehicles.*,tblbrands.BrandName,tblbrands.id as bid  from tblvehicles join tblbrands on tblbrands.id=tblvehicles.VehiclesBrand");   
+        $record = array();
+        while($row = mysqli_fetch_assoc($all) ){   
+            $record[] = $row;
+        }
+       ?>
+       <?php foreach(  $record as $rec ){?>
                 <div  style="height:150px"class="card-test">
-                    <img src="images/trending-car-img-1.jpg" style="height:150px;width:200px;border-radius: 8px;" alt="Avatar">
-                    <B><h3><span>Nissan , Nissan GT-R</span> RS 2000 Per Day</h3></B>
+                    <img src="images/<?php echo $rec['Vimage1'];?>" style="height:150px;width:200px;border-radius: 8px;" alt="Avatar">
+                    <B><h3><span><?php echo $rec['BrandName'];?> , <?php echo $rec['VehiclesTitle'];?></span> RS <?php echo $rec['PricePerDay'];?>  Per Day</h3></B>
                     <ul style="list-style-type: none;margin:20px;padding:5px;">
-                        <li style="float: left;padding: 0px 5px ;"> <p> <i class="fa fa-car" aria-hidden="true"> </i> Petrol </p></li>
-                        <li style="float: left;padding: 0px 5px ;"> <p> <i class="fa fa-calendar" aria-hidden="true"> </i> 2018 Model </p></li>
-                        <li style="float: left;padding: 0px 5px ;"> <p> <i class="fa fa-user-circle-o" aria-hidden="true"> </i> 5 seats </p></li>
-                        <li style="padding: 0px 4px ;"><button type="submit" style="width:150px;height:30px;background-color:#eb5454 ;" class="btn btn-block">View Details<i class="fa fa-angle-right" aria-hidden="true"></i></button></li>
+                        <li style="float: left;padding: 0px 5px ;"> <p> <i class="fa fa-car" aria-hidden="true"> </i> <?php echo $rec['SeatingCapacity'];?> seats </p></li>
+                        <li style="float: left;padding: 0px 5px ;"> <p> <i class="fa fa-calendar" aria-hidden="true"> </i><?php echo $rec['ModelYear'];?> Model </p></li>
+                        <li style="float: left;padding: 0px 5px ;"> <p> <i class="fa fa-user-circle-o" aria-hidden="true"> </i><?php echo $rec['FuelType'];?></p></li>
+                        <li style="padding: 0px 4px ;"><a href="car booking.php?vhid=<?php echo $rec['id'];?>"><button type="submit" style="width:150px;height:30px;background-color:#eb5454 ;" class="btn btn-block">View Details<i class="fa fa-angle-right" aria-hidden="true"></i></button></a></li>
                     </ul>
                 </div>
-                <div  style="height:150px"class="card-test">
-                    <img src="images/BMW-5-Series-Exterior-102006.jpg" style="height:150px;width:200px;border-radius: 8px;" alt="Avatar">
-                    <B><h3><span>BMW , BMW 5 series</span> RS 1000 Per Day</h3></B>
-                    <ul style="list-style-type: none;margin:20px;padding:5px;">
-                        <li style="float: left;padding: 0px 5px ;"> <p> <i class="fa fa-car" aria-hidden="true"> </i> Petrol </p></li>
-                        <li style="float: left;padding: 0px 5px ;"> <p> <i class="fa fa-calendar" aria-hidden="true"> </i> 2020 Model </p></li>
-                        <li style="float: left;padding: 0px 5px ;"> <p> <i class="fa fa-user-circle-o" aria-hidden="true"> </i> 5 seats </p></li>
-                        <li style="padding: 0px 4px ;"><button type="submit" style="width:150px;height:30px;background-color:#eb5454 ;" class="btn btn-block">View Details<i class="fa fa-angle-right" aria-hidden="true"></i></button></li>
-                    </ul>
-                </div>
-                <div  style="height:150px"class="card-test">
-                    <img src="images/2015_Toyota_Fortuner_(New_Zealand).jpg" style="height:150px;width:200px;border-radius: 8px;" alt="Avatar">
-                    <B><h3><span>Toyota , Toyota Fortunar</span> RS 1500 Per Day</h3></B>
-                    <ul style="list-style-type: none;margin:20px;padding:5px;">
-                        <li style="float: left;padding: 0px 5px ;"> <p> <i class="fa fa-car" aria-hidden="true"> </i> Petrol </p></li>
-                        <li style="float: left;padding: 0px 5px ;"> <p> <i class="fa fa-calendar" aria-hidden="true"> </i> 2015 Model </p></li>
-                        <li style="float: left;padding: 0px 5px ;"> <p> <i class="fa fa-user-circle-o" aria-hidden="true"> </i> 5 seats </p></li>
-                        <li style="padding: 0px 4px ;"><button type="submit" style="width:150px;height:30px;background-color:#eb5454 ;" class="btn btn-block">View Details<i class="fa fa-angle-right" aria-hidden="true"></i></button></li>
-                    </ul>
-                </div>
-                <div  style="height:150px"class="card-test">
-                    <img src="images/1audiq8.jpg" style="height:150px;width:200px;border-radius: 8px;" alt="Avatar">
-                    <B><h3><span>Audi , Audi Q8</span> RS 6600 Per Day</h3></B>
-                    <ul style="list-style-type: none;margin:20px;padding:5px;">
-                        <li style="float: left;padding: 0px 5px ;"> <p> <i class="fa fa-car" aria-hidden="true"> </i> Petrol </p></li>
-                        <li style="float: left;padding: 0px 5px ;"> <p> <i class="fa fa-calendar" aria-hidden="true"> </i> 2015 Model </p></li>
-                        <li style="float: left;padding: 0px 5px ;"> <p> <i class="fa fa-user-circle-o" aria-hidden="true"> </i> 5 seats </p></li>
-                        <li style="padding: 0px 4px ;"><button type="submit" onclick="location.href='car booking.php';" style="width:150px;height:30px;background-color:#eb5454 ;" class="btn btn-block">View Details<i class="fa fa-angle-right" aria-hidden="true"></i></button></li>
-                    </ul>
-                </div>
+       <?php } ?>
+
+       
+                
+             
+               
             </div></td><p>&nbsp; </p>
         </tr>
         <tr>
             <td><div style="width:300px;height:350px;;background-color: rgba(255, 255, 255, 0.8);"class="grid-container-fac">
                 <h2><i class="fa fa-car" aria-hidden="true"></i> Recently Listed Cars</h2>
-                <div style="height:200px;width:230px;background-color:#e0ddde;padding-bottom:5px;margin-top:5px;" class="card-test">
-                    <img src="images/recent-car-1.jpg" style="width:220px;" alt="Avatar">
+
+                <?php 
+       $all=mysqli_query($conn,$sql = "SELECT tblvehicles.*,tblbrands.BrandName,tblbrands.id as bid  from tblvehicles join tblbrands on tblbrands.id=tblvehicles.VehiclesBrand order by id desc limit 4");
+        $record = array();
+        while($row = mysqli_fetch_assoc($all) ){   
+            $record[] = $row;
+        }
+       ?>
+       <?php foreach(  $record as $rec ){?>
+        <div style="height:250px;width:230px;background-color:#e0ddde;padding-bottom:5px;margin-top:5px;" class="card-test">
+                    <img src="images/<?php echo $rec['Vimage1'];?>" style="width:220px;" alt="Avatar">
                     <br>
-                    <a href="car booking.php"><B style="border-radius: 10px;padding:0px 2px;width:100%;border: 0.1875em solid #0F1C3F;;float:left;display: block;background-color: blanchedalmond;"><P style="float:left;"">BMW GT</P><span><P style="float:right">RS 600/DAY</P></span></B></a>
-                </div>
-                <div style="height:200px;width:230px;background-color:#e0ddde;padding-bottom:5px;margin-top:5px;" class="card-test">
-                    <img src="images/recent-car-2.jpg" style="width:220px;" alt="Avatar">
-                    <br>
-                    <a href="car booking.php"><B style="border-radius: 10px;padding:0px 2px;width:100%;border: 0.1875em solid #0F1C3F;;float:left;display: block;background-color: blanchedalmond;"><P style="float:left;"">BMW GT</P><span><P style="float:right">RS 600/DAY</P></span></B></a>
-                </div>
-                <div style="height:200px;width:230px;background-color:#e0ddde;padding-bottom:5px;margin-top:5px;" class="card-test">
-                    <img src="images/recent-car-3.jpg" style="width:220px;" alt="Avatar">
-                    <br>
-                    <a href="car booking.php"><B style="border-radius: 10px;padding:0px 2px;width:100%;border: 0.1875em solid #0F1C3F;;float:left;display: block;background-color: blanchedalmond;"><P style="float:left;"">BMW GT</P><span><P style="float:right">RS 600/DAY</P></span></B></a>
-                </div>
+                    <a href="car booking.php?vhid=<?php echo $rec['id'];?>">
+                  <B style="border-radius: 10px;padding:0px 2px;width:100%;border: 0.1875em solid #0F1C3F;;float:left;display: block;background-color: blanchedalmond;">
+                    <P style="float:left;"> <?php echo $rec['BrandName'];?> , <?php echo $rec['VehiclesTitle'];?> </P>
+                    <span>
+                      <P style="float:right">RS <?php echo $rec['PricePerDay'];?> /DAY </P>
+                    </span>
+                  </B>
+                  </a>
+          </div>
+       <?php } ?>
+                
+
+
+                
+                
             </div></td>
         </tr>
         
@@ -175,6 +193,6 @@ $id=$_SESSION["username"];
   <p style="margin:30px;text-align:center">Car Rental © 2020</p>
 </div>
 </div>
-
+<script src="https://unpkg.com/scrollreveal"></script>
 </body>
 </html>
